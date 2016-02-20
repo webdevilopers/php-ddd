@@ -1,0 +1,8 @@
+services:
+    sps.calculation.create_dormer_calculation:
+        class:  Sps\Bundle\CalculationBundle\Command\CreateDormerCalculationCommand
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@security.token_storage"
+            - "@session"
+            - "@translator.default"
