@@ -8,13 +8,11 @@ class DefaultController extends Controller
      */
     public function indexAction($type)
     {
-        $data = $this->getRequest()->request->all();
-
-        // Generate calculation only - no prices!
+        // ... After form process this will be the valid entity
         $dormerCalculation = new DormerCalculation();
 
         $createDormerCalculationCommand = $this->get('sps.calculation.create_dormer_calculation');
         $createDormerCalculationCommand->setCalculation($dormerCalculation);
-        $createDormerCalculationCommand->calculate($data);
+        $createDormerCalculationCommand->calculate();
     }
 }
