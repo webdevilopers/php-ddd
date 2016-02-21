@@ -13,6 +13,7 @@ class DefaultController extends Controller
     public function indexAction($type)
     {
         // ... After form process this will be the valid entity
+        // Validation should be moved from entity to command (=> data_class) instead
         $dormerCalculation = new DormerCalculation();
         
         // @todo Handle form, then populate entity and pass it to command bus and handler

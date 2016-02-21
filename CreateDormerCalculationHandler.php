@@ -24,5 +24,19 @@ class CreateDormerCalculationHandler extends AbstractCreateCalculationHandler
     
     public function calculate()
     {
-
+        // Do a lot of calculation with values from the entity
+        // But since there will be no more getters and setters
+        // and not the entity but the command will be data_class
+        // of the form and validated should these vars go into
+        // the command too (redundant?)?
+        // Or only into the command and then set them as valid values on the entity
+        // via special method setMeasurements($widht, $height) <- value object?!
+        $width = $this->getCalculation()->getWidth();
+        $height = $this->getCalculation()->getHeight();
+        $quantity = $this->getCalculation()->getQuantity();
+        
+        // In the end set a lot of prices on the entity
+        $total = ($width*$height)*$quantity*1000;
+        $this->getCalculation()->addPrice('total', $total);
     }    
+}

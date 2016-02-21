@@ -41,17 +41,25 @@ class DormerCalculation
      * @ORM\Column(name="w", type="float")
      */
     private $width;    
-    
+
     /**
-     * @var string $total
-     *
-     * @ORM\Column(name="total", type="float")
+     * @ORM\OneToMany(targetEntity="DormerCalculationPrice",
+     *  mappedBy="dormerCalculation", cascade="persist", indexBy="name", fetch="EAGER"
+     * )
      */
-    private $total;    
+    private $prices;    
     
-    public function __construct()
+    public function __construct($lotsOfValues)
     {
-      $this->prices = new ArrayCollection();
+        // Do not use getters and setters on entity, put all vars here via constructor
+        // or method e.g. addPrice() ?!
+        
+        // Use a single $lotsOfValues var if there are a lot?!
+                
     }
-}
+    
+    public function addPrice(DormerCalculationPrice $price) {
+        $this->prices[$price->getName()] = $price;
+        $price->setDormerCalculation($this);
+    }    
 }
