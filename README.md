@@ -8,3 +8,6 @@ Dormer Calculation examples:
 
 Feel free to post general questions as an Issue. E.g.:
 * https://github.com/yvoyer/calculation-example/issues/2
+
+More examples will be posted in my blog:
+* http://blog.webdevilopers.net/category/php/ddd/
