@@ -1,12 +1,28 @@
 <?php
 
+namespace Example\Domain\Model;
+
 class DormerCalculationPrice
 {
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var int
+     */
     private $quantity;
-    private $total;
+
+    /**
+     * @var int
+     */
     private $subtotal;
-    private $calculation; // probably not transferable??? so no set once created
+
+    /**
+     * @var DormerCalculation
+     */
+    private $calculation;
 
     /**
      * @param DormerCalculation $calculation
@@ -23,23 +39,21 @@ class DormerCalculationPrice
         $this->name = $name;
         $this->subtotal = $subTotal;
         $this->quantity = $quantity;
-        $this->total = $this->calculateTotal();
     }
 
     /**
      * @return int
      */
-    private function calculateTotal()
+    public function calculateTotal()
     {
-        return $this->subtotal * $this->quantity; //The result of your calculation
+        return $this->subtotal * $this->quantity;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getTotal()
+    public function getName()
     {
-        return $this->total;
+        return $this->name;
     }
-    // setter should be necessary here only for attribute that can change over the life cycle of the entity
 }

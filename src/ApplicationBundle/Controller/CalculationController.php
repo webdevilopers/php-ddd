@@ -1,5 +1,10 @@
 <?php
 
+namespace Example\ApplicationBundle\Controller;
+
+use Example\Infrastructure\CQRS\Command\CalculationCommand;
+use Example\Infrastructure\CQRS\Handler\CalculationHandler;
+
 class CalculationController
 {
     /**
@@ -23,7 +28,6 @@ class CalculationController
         $command = $this->getFormData($type);
 
         $this->handler->handle($command); // todo would probably be the command bus
-
         // Get ID from entity and redirect, no return values required
     }
 
@@ -34,16 +38,8 @@ class CalculationController
      */
     private function getFormData($type)
     {
-        // todo this could be a calculation mapper service
-        $mapping = [
-            CalculationCommand::BASIC_TYPE => CalculationCommand::class,
-        ];
-
         // Form handling generates the configured command object
-        /**
-         * @var CalculationCommand $command
-         */
-        $command = new $mapping[$type];
+        $command = new CalculationCommand();
         $command->quantity = 12;
         $command->subTotal = 1000;
 
