@@ -1,20 +1,32 @@
 {
-    "name": "vendor_name/package_name",
-    "description": "description_text",
+    "name": "php-ddd/php-ddd",
+    "description": "Example of structure and implementation of DDD in php with Symfony and Doctrine",
     "minimum-stability": "stable",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
-            "name": "author's name",
+            "name": "",
             "email": "email@example.com"
         }
     ],
     "require": {
-        "phpunit/phpunit": "^5.2"
+        "php": "^5.5",
+        "behat/behat": "^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0"
     },
     "autoload": {
         "psr-4": {
-            "Example\\": ["src", "tests"]
+            "Example\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Example\\": ["tests", "features/bootstrap"]
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
     }
 }
