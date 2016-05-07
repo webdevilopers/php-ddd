@@ -9,15 +9,27 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Example\Domain\Administration\Application\AdministrationService;
 use Example\Domain\Administration\Application\HireCandidateCommand;
+use Example\Domain\Administration\Application\MenuService;
+use Example\Domain\Administration\Application\RegisterNewMeal;
+use Example\Domain\Administration\Application\ReleaseMeal;
 use Example\Domain\Common\DomainModel\FullName;
 use Example\Domain\Administration\DomainModel\Identity\OwnerId;
 use Example\Domain\Administration\DomainModel\Owner;
 use Example\Domain\Common\DomainModel\JobTitle;
+use Example\Domain\Common\DomainModel\MealName;
+use Example\Domain\Common\DomainModel\Money;
 use Example\Domain\Sale\Application\CashierService;
+use Example\Domain\Sale\Application\OrderMeal;
+use Example\Domain\Sale\Application\OrderService;
 use Example\Domain\Sale\Application\WaitressService;
+use Example\Domain\Sale\DomainModel\CustomerName;
+use Example\Domain\Sale\DomainModel\CustomerType;
+use Example\Domain\Sale\DomainModel\Identity\EmployeeId;
+use Example\Domain\Sale\DomainModel\Waitress;
 use Example\Domain\Shipping\Application\CreateDeliveryBoyHandler;
 use Example\Infrastructure\InMemory\EmployeeCollection;
 use Example\Infrastructure\InMemory\OwnerCollection;
+use Example\Infrastructure\InMemory\Sale\MealCollection;
 use Example\Infrastructure\Symfony\SymfonyPublisher;
 use Example\Domain\Sale\Application\CookService;
 use PHPUnit_Framework_Assert as Assert;
@@ -38,9 +50,31 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     private $owners;
 
     /**
+     * @var MealCollection
+     */
+    private $meals;
+
+    /**
      * @var AdministrationService
      */
     private $administrationService;
+
+    /**
+     * @var MenuService
+     */
+    private $menuService;
+
+    /**
+     * @var OrderService
+     */
+    private $orderService;
+
+    /**
+     * The current waitress on post
+     *
+     * @var Waitress|null
+     */
+    private $waitress;
 
     /**
      * Initializes context.
@@ -52,16 +86,19 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     public function __construct()
     {
         $publisher = new SymfonyPublisher();
+        $this->meals = new MealCollection();
 
         // Administration context
         $this->owners = new OwnerCollection();
         $this->administrationService = new AdministrationService($this->owners, $publisher);
+        $this->menuService = new MenuService();
 
         // Sale context
         $this->employees = new EmployeeCollection();
         new CookService($this->employees, $publisher);
         new CashierService($this->employees, $publisher);
         new WaitressService($this->employees, $publisher);
+        $this->orderService = new OrderService();
 
         // Shipping context
         new CreateDeliveryBoyHandler($this->employees, $publisher);
@@ -87,10 +124,78 @@ class ApplicationContext implements Context, SnippetAcceptingContext
     }
 
     /**
+     * @Given :owner has created the meal :mealName with price of :mealPrice each
+     */
+    public function hasCreatedTheMealWithPriceOfEach($owner, $mealName, $mealPrice)
+    {
+        $this->menuService->registerMeal(
+            new RegisterNewMeal(
+                new OwnerId(FullName::fromSingleString($owner)),
+                MealName::fromString($mealName),
+                Money::fromString($mealPrice)
+            )
+        );
+    }
+
+    /**
+     * @Given :owner has released the meal :mealName
+     */
+    public function hasReleasedTheMeal($owner, $mealName)
+    {
+        $this->menuService->releaseMeal(
+            new ReleaseMeal(
+                new OwnerId(FullName::fromSingleString($owner)),
+                MealName::fromString($mealName)
+            )
+        );
+    }
+
+    /**
      * @Given :applicantName postulate on a job offering
      */
     public function postulateOnAJobOffering($applicantName)
     {
+    }
+
+    /**
+     * @Given :waitressName is taking phone call orders
+     */
+    public function isTakingPhoneCallOrders($waitressName)
+    {
+        $this->waitress = $this->employees->employeeWithIdentity(new EmployeeId($waitressName));
+    }
+
+    /**
+     * @Given :customerName calls the shop to order the meal :mealName
+     */
+    public function callsTheShopToOrderTheMeal($customerName, $mealName)
+    {
+        $meal = $this->meals->mealWithName(MealName::fromString($mealName));
+
+        $this->orderService->orderMeal(
+            new OrderMeal(
+                $this->waitress->getIdentity(),
+                CustomerType::PhoneCustomer(),
+                $meal->getIdentity(),
+                CustomerName::fromString($customerName)
+            )
+        );
+    }
+
+    /**
+     * @Given :customerName phone number is :phoneNumber
+     */
+    public function phoneNumberIs($customerName, $phoneNumber)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Given :customerName home address is :address
+     */
+    public function homeAddressIs($customerName, $address)
+    {
+        throw new PendingException();
     }
 
     /**
@@ -105,6 +210,38 @@ class ApplicationContext implements Context, SnippetAcceptingContext
                 JobTitle::fromString($role)
             )
         );
+    }
+
+    /**
+     * @When :waitressName confirms the order with id :orderId at :time
+     */
+    public function confirmsTheOrderWithIdAt($waitressName, $orderId, $time)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When :cookName finishes to cook the order :orderId at :time
+     */
+    public function finishesToCookTheOrderAt($cookName, $orderId, $time)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When :deliveryBoyName delivers the order :orderId at :time
+     */
+    public function deliversTheOrderAt($deliveryBoyName, $orderId, $time)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @When :customerName pays :price to :deliveryBoyName
+     */
+    public function paysTo($customerName, $price, $deliveryBoyName)
+    {
+        throw new PendingException();
     }
 
     /**
@@ -125,5 +262,37 @@ class ApplicationContext implements Context, SnippetAcceptingContext
         Assert::assertCount(
             (int) $employeeCount, $this->employees->employeesWithTitle(JobTitle::fromString($role))
         );
+    }
+
+    /**
+     * @Then Order :orderId should be closed at :time
+     */
+    public function orderShouldBeClosedAt($orderId, $time)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then The order :orderId should have an income of :money
+     */
+    public function theOrderShouldHaveAnIncomeOf($orderId, $money)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then The order :orderId should registers a tip of :money
+     */
+    public function theOrderShouldRegistersATipOf($orderId, $money)
+    {
+        throw new PendingException();
+    }
+
+    /**
+     * @Then The order :orderId should have taken :time to complete
+     */
+    public function theOrderShouldHaveTakenToComplete($orderId, $time)
+    {
+        throw new PendingException();
     }
 }
