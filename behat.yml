@@ -1,0 +1,7 @@
+default:
+    suites:
+        admin_features:
+            paths:    [ %paths.base%/features ]
+            contexts: [ Example\ApplicationContext ]
+            filters:
+                role: owner
