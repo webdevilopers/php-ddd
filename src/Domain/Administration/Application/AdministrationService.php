@@ -7,7 +7,6 @@
 
 namespace Example\Domain\Administration\Application;
 
-use Example\Domain\Administration\DomainModel\CandidateRepository;
 use Example\Domain\Administration\DomainModel\OwnerRepository;
 use Example\Domain\Common\Application\EventPublisher;
 

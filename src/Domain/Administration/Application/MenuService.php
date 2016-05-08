@@ -7,13 +7,57 @@
 
 namespace Example\Domain\Administration\Application;
 
+use Example\Domain\Administration\DomainModel\OwnerRepository;
+use Example\Domain\Common\Application\EventPublisher;
+
+/**
+ * All in one class service
+ */
 final class MenuService
 {
-    public function registerMeal(RegisterNewMeal $command)
+    /**
+     * @var OwnerRepository
+     */
+    private $owners;
+
+    /**
+     * @var EventPublisher
+     */
+    private $publisher;
+
+    /**
+     * @param OwnerRepository $owners
+     * @param EventPublisher $publisher
+     */
+    public function __construct(OwnerRepository $owners, EventPublisher $publisher)
     {
+        $this->owners = $owners;
+        $this->publisher = $publisher;
     }
 
-    public function releaseMeal(ReleaseMeal $command)
+    /**
+     * @param RegisterNewRecipe $command
+     */
+    public function registerRecipe(RegisterNewRecipe $command)
     {
+        $owner = $this->owners->ownerWithId($command->creator());
+        $owner->newRecipe($command->name(), $command->price());
+
+        $this->owners->saveOwner($owner);
+
+        $this->publisher->publish($owner->uncommitedEvents());
+    }
+
+    /**
+     * @param ReleaseRecipe $command
+     */
+    public function releaseRecipe(ReleaseRecipe $command)
+    {
+        $owner = $this->owners->ownerWithId($command->creator());
+        $owner->releaseRecipe($command->recipeId());
+
+        $this->owners->saveOwner($owner);
+
+        $this->publisher->publish($owner->uncommitedEvents());
     }
 }

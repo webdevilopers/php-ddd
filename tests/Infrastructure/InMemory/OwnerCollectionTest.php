@@ -25,7 +25,7 @@ final class OwnerCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_it_should_return_owner_with_id()
     {
-        $owner = Owner::fakeWithId('id');
+        $owner = new Owner(new OwnerId(FullName::fromSingleString('id')));
         $this->collection->saveOwner($owner);
 
         $this->assertCount(1, $this->collection);

@@ -7,6 +7,13 @@
 
 namespace Example\Domain\Administration\DomainModel;
 
-final class MealId
+final class RetiredStatus extends RecipeStatus
 {
+    /**
+     * @return bool
+     */
+    public function isRetired()
+    {
+        return true;
+    }
 }

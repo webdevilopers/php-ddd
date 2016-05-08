@@ -10,7 +10,7 @@ namespace Example\Domain\Sale\DomainModel;
 use Example\Domain\Sale\DomainModel\Identity\EmployeeId;
 use Example\Domain\Sale\DomainModel\Identity\OrderId;
 
-abstract class CustomerType
+final class PhoneCustomer extends CustomerType
 {
     /**
      * @param OrderId $orderId
@@ -19,13 +19,8 @@ abstract class CustomerType
      *
      * @return Order
      */
-    public abstract function startOrder(OrderId $orderId, EmployeeId $employeeId, Buyer $buyer);
-
-    /**
-     * @return CustomerType
-     */
-    public static function PhoneCustomer()
+    public function startOrder(OrderId $orderId, EmployeeId $employeeId, Buyer $buyer)
     {
-        return new PhoneCustomer();
+        return Order::PhoneOrder($orderId, $employeeId, $buyer);
     }
 }

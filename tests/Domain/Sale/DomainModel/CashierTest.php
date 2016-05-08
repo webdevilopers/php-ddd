@@ -48,4 +48,10 @@ final class CashierTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new EmployeeId(123), $event->employeeId());
         $this->assertEquals(FullName::fromString('Joe', 'Blow'), $event->name());
     }
+
+    public function test_should_take_phone_order()
+    {
+        $this->cashier->takePhoneOrder();
+
+    }
 }

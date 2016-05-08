@@ -10,12 +10,33 @@ namespace Example\Domain\Common\DomainModel;
 final class Money
 {
     /**
-     * @param string $string
+     * @var int
+     */
+    private $amount;
+
+    /**
+     * @param int $amount
+     */
+    private function __construct($amount)
+    {
+        $this->amount = $amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function amount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @param int $int
      *
      * @return Money
      */
-    public static function fromString($string)
+    public static function fromInt($int)
     {
-        return new self();
+        return new self($int);
     }
 }

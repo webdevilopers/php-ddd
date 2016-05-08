@@ -7,19 +7,38 @@
 
 namespace Example\Infrastructure\InMemory\Sale;
 
-use Example\Domain\Administration\DomainModel\Meal;
-use Example\Domain\Administration\DomainModel\MealRepository;
-use Example\Domain\Common\DomainModel\MealName;
+use Example\Domain\Common\Exception\EntityNotFoundException;
+use Example\Domain\Sale\DomainModel\Identity\MealId;
+use Example\Domain\Sale\DomainModel\Meal;
+use Example\Domain\Sale\DomainModel\MealRepository;
 
 final class MealCollection implements MealRepository
 {
     /**
-     * @param MealName $name
+     * @var Meal[]
+     */
+    private $meals = [];
+
+    /**
+     * @param Meal $meal
+     */
+    public function saveMeal(Meal $meal)
+    {
+        $this->meals[$meal->getIdentity()->id()] = $meal;
+    }
+
+    /**
+     * @param MealId $id
      *
      * @return Meal
+     * @throws EntityNotFoundException
      */
-    public function mealWithName(MealName $name)
+    public function activeMeal(MealId $id)
     {
-        throw new \RuntimeException('Method ' . __METHOD__ . ' not implemented yet.');
+        if (! isset($this->meals[$id->id()])) {
+            throw EntityNotFoundException::entityWithIdentity($id);
+        }
+
+        return $this->meals[$id->id()];
     }
 }

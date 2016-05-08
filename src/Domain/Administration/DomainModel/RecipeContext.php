@@ -7,14 +7,12 @@
 
 namespace Example\Domain\Administration\DomainModel;
 
-use Example\Domain\Common\DomainModel\MealName;
-
-interface MealRepository
+interface RecipeContext
 {
     /**
-     * @param MealName $name
+     * @param RecipeStatus $status
      *
-     * @return Meal
+     * @internal Used by state machine only
      */
-    public function mealWithName(MealName $name);
+    public function setState(RecipeStatus $status);
 }
