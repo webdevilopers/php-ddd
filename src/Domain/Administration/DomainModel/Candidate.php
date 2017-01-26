@@ -11,6 +11,9 @@ use Example\Domain\Administration\DomainModel\Identity\AdministrationIdGenerator
 use Example\Domain\Common\DomainModel\FullName;
 use Example\Domain\Common\DomainModel\JobTitle;
 
+/**
+ * Entity part of the Owner aggregate root
+ */
 final class Candidate
 {
     /**

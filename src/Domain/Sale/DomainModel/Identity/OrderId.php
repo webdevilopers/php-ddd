@@ -7,11 +7,10 @@
 
 namespace Example\Domain\Sale\DomainModel\Identity;
 
-use Example\Domain\Common\DomainModel\FullName;
 use Example\Domain\Common\DomainModel\Identity\Identity;
-use Example\Domain\Sale\DomainModel\Employee;
+use Example\Domain\Sale\DomainModel\Order;
 
-final class EmployeeId implements Identity
+final class OrderId implements Identity
 {
     /**
      * @var mixed
@@ -31,7 +30,7 @@ final class EmployeeId implements Identity
      */
     public function getEntityClass()
     {
-        return Employee::class;
+        return Order::Class;
     }
 
     /**
@@ -40,25 +39,5 @@ final class EmployeeId implements Identity
     public function id()
     {
         return $this->id;
-    }
-
-    /**
-     * @param FullName $name
-     *
-     * @return EmployeeId
-     */
-    public static function fromName(FullName $name)
-    {
-        return new self($name->toString());
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return EmployeeId
-     */
-    public static function fromString($string)
-    {
-        return new self($string);
     }
 }

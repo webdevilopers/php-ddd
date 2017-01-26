@@ -57,6 +57,11 @@ final class Cashier extends AggregateRoot implements Employee
         return $title->equal(JobTitle::Cashier());
     }
 
+    public function takePhoneOrder()
+    {
+
+    }
+
     /**
      * @param CashierWasCreated $event
      */
