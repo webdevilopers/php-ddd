@@ -51,4 +51,14 @@ final class EmployeeId implements Identity
     {
         return new self($name->toString());
     }
+
+    /**
+     * @param string $string
+     *
+     * @return EmployeeId
+     */
+    public static function fromString($string)
+    {
+        return new self($string);
+    }
 }

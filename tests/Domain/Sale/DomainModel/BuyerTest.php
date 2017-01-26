@@ -11,7 +11,7 @@ final class BuyerTest extends \PHPUnit_Framework_TestCase
 {
     public function test_it_should_be_created_from_phone()
     {
-        $buyer = Buyer::PhoneBuyer(
+        $buyer = new PhoneBuyer(
             PhoneNumber::fromString('5555555', 'CA'),
             Address::fromString('1 main street')
         );

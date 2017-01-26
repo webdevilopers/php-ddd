@@ -100,8 +100,19 @@ final class OrderService
         $this->publisher->publish($order->uncommitedEvents());
     }
 
+    /**
+     * @param OrderId $orderId
+     * @param \DateTime $time
+     * @throws \RuntimeException
+     *
+     * @return ScheduledForPreparationOrder
+     */
     public function confirmOrder(OrderId $orderId, \DateTime $time)
     {
         throw new \RuntimeException(__METHOD__ . ' is not implemented yet.');
+        $order = $this->orders->orderWithId($orderId);
+        $order->confirm($time); // todo should it return ConfirmedOrder class or only with flag true???
+        $this->orders->saveOrder($order);
+        $this->publisher->publish($order->uncommitedEvents());
     }
 }

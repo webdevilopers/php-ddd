@@ -21,6 +21,6 @@ final class PhoneCustomer extends CustomerType
      */
     public function startOrder(OrderId $orderId, EmployeeId $employeeId, Buyer $buyer)
     {
-        return Order::PhoneOrder($orderId, $employeeId, $buyer);
+        return Order::PendingOrder($orderId, $employeeId, $buyer);
     }
 }

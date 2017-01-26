@@ -9,8 +9,11 @@ namespace Example\Domain\Sale\DomainModel;
 
 use Example\Domain\Common\DomainModel\AggregateRoot;
 use Example\Domain\Common\DomainModel\Event\DomainEvent;
+use Example\Domain\Sale\DomainModel\Event\MealWasOrdered;
+use Example\Domain\Sale\DomainModel\Event\OrderWasConfirmed;
 use Example\Domain\Sale\DomainModel\Event\OrderWasCreated;
 use Example\Domain\Sale\DomainModel\Identity\EmployeeId;
+use Example\Domain\Sale\DomainModel\Identity\MealId;
 use Example\Domain\Sale\DomainModel\Identity\OrderId;
 
 final class Order extends AggregateRoot
@@ -31,6 +34,16 @@ final class Order extends AggregateRoot
     private $buyer;
 
     /**
+     * @var Meal[]
+     */
+    private $meals = [];
+
+    /**
+     * @var bool
+     */
+    private $isConfirmed = false;
+
+    /**
      * @param DomainEvent[] $events
      */
     private function __construct(array $events = [])
@@ -49,11 +62,56 @@ final class Order extends AggregateRoot
     }
 
     /**
-     * @param MEal $meal
+     * @return BuyerId
      */
-    public function orderMeal(MEal $meal)
+    public function buyerId()
     {
+        return $this->buyer->getIdentity();
+    }
 
+    /**
+     * @return EmployeeId
+     */
+    public function takenBy()
+    {
+        return EmployeeId::fromString($this->employeeId);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConfirmed()
+    {
+        return $this->isConfirmed;
+    }
+
+    /**
+     * @param Meal $meal
+     */
+    public function orderMeal(Meal $meal)
+    {
+        $this->mutate(new MealWasOrdered($this->getIdentity(), $meal));
+    }
+
+    /**
+     * @return MealId[]
+     */
+    public function orderedMeals()
+    {
+        return array_map(
+            function (Meal $meal) {
+                return $meal->getIdentity();
+            },
+            $this->meals
+        );
+    }
+
+    /**
+     * @param MealWasOrdered $event
+     */
+    protected function onMealWasOrdered(MealWasOrdered $event)
+    {
+        $this->meals[] = $event->_meal();
     }
 
     /**
@@ -63,24 +121,60 @@ final class Order extends AggregateRoot
     {
         $this->id = $event->orderId()->id();
         $this->employeeId = $event->employeeId()->id();
+        $this->buyer = $event->_buyer();
+    }
+
+    /**
+     * @param OrderWasConfirmed $event
+     * @throws OrderException
+     */
+    protected function onOrderWasConfirmed(OrderWasConfirmed $event)
+    {
+        if ($this->isConfirmed()) {
+            throw new OrderException('Cannot confirm an order twice.');
+        }
+
+        $this->isConfirmed = true;
     }
 
     /**
      * @param OrderId $id
-     * @param EmployeeId $employeeId
+     * @param EmployeeId $takenBy
      * @param Buyer $buyer
      *
      * @return Order
      */
-    public static function PhoneOrder(OrderId $id, EmployeeId $employeeId, Buyer $buyer)
+    public static function PendingOrder(OrderId $id, EmployeeId $takenBy, Buyer $buyer)
     {
-        $order = new self(
+        return new self(
             [
-                new OrderWasCreated($id, $employeeId, $buyer->getIdentity()),
+                new OrderWasCreated($id, $takenBy, $buyer),
             ]
         );
-        $order->buyer = $buyer;
+   }
+
+    /**
+     * @param OrderId $id
+     * @param EmployeeId $takenBy
+     * @param Buyer $buyer
+     *
+     * @return Order
+     */
+    public static function ConfirmedOrder(OrderId $id, EmployeeId $takenBy, Buyer $buyer)
+    {
+        $order = self::PendingOrder($id, $takenBy, $buyer);
+        $order->mutate(new OrderWasConfirmed($id));
 
         return $order;
+    }
+
+    /**
+     * @param DomainEvent[] $events
+     *
+     * @return Order
+     */
+    public static function fromStream(array $events)
+    {
+        return new self($events);
     }
 }

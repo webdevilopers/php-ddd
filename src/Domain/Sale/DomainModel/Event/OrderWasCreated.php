@@ -8,6 +8,7 @@
 namespace Example\Domain\Sale\DomainModel\Event;
 
 use Example\Domain\Common\DomainModel\Event\DomainEvent;
+use Example\Domain\Sale\DomainModel\Buyer;
 use Example\Domain\Sale\DomainModel\BuyerId;
 use Example\Domain\Sale\DomainModel\Identity\EmployeeId;
 use Example\Domain\Sale\DomainModel\Identity\OrderId;
@@ -25,20 +26,20 @@ final class OrderWasCreated implements DomainEvent
     private $employeeId;
 
     /**
-     * @var BuyerId
+     * @var Buyer
      */
-    private $buyerId;
+    private $buyer;
 
     /**
      * @param OrderId $id
      * @param EmployeeId $employeeId
-     * @param BuyerId $buyerId
+     * @param Buyer $buyer
      */
-    public function __construct(OrderId $id, EmployeeId $employeeId, BuyerId $buyerId)
+    public function __construct(OrderId $id, EmployeeId $employeeId, Buyer $buyer)
     {
         $this->orderId = $id;
         $this->employeeId = $employeeId;
-        $this->buyerId = $buyerId;
+        $this->buyer = $buyer;
     }
 
     /**
@@ -62,6 +63,16 @@ final class OrderWasCreated implements DomainEvent
      */
     public function buyerId()
     {
-        return $this->buyerId;
+        return $this->buyer->getIdentity();
+    }
+
+    /**
+     * @return Buyer
+     *
+     * @internal Should not be used for operation.
+     */
+    public function _buyer()
+    {
+        return $this->buyer;
     }
 }

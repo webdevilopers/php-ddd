@@ -7,10 +7,6 @@
 
 namespace Example\Domain\Sale\DomainModel;
 
-interface Buyer
+final class OrderException extends \Exception
 {
-    /**
-     * @return BuyerId
-     */
-    public function getIdentity();
 }

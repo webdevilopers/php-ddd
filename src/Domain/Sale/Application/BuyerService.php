@@ -10,6 +10,7 @@ namespace Example\Domain\Sale\Application;
 use Example\Domain\Sale\DomainModel\Address;
 use Example\Domain\Sale\DomainModel\Buyer;
 use Example\Domain\Sale\DomainModel\BuyerRepository;
+use Example\Domain\Sale\DomainModel\PhoneBuyer;
 use Example\Domain\Sale\DomainModel\PhoneNumber;
 
 final class BuyerService
@@ -40,7 +41,7 @@ final class BuyerService
      */
     public function registerPhoneBuyer($phoneNumber, $address)
     {
-        $buyer = Buyer::PhoneBuyer(
+        $buyer = new PhoneBuyer(
             PhoneNumber::fromString($phoneNumber, $this->countryCode),
             Address::fromString($address)
         );
