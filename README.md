@@ -1,20 +1,8 @@
 # php-ddd
-PHP Symfony Doctrine Domain-driven Design
+This repository was originally designed to bring Domain-driven Design, CQRS and Event-Sourcing to the PHP world focussing on implementing the Symfony Framework and Doctrine ORM and ODM.
 
-Dormer Calculation examples:
-* https://gist.github.com/webdevilopers/5ac1f30d88102e24df87
-* https://gist.github.com/yvoyer/a778ac744ddf10012864
-* https://github.com/yvoyer/calculation-example
+Over the years the proposals turned into general questions and discussions about these topics and are no longer related to a concrete code base.
 
-Feel free to post general questions as an Issue. E.g.:
-* https://github.com/yvoyer/calculation-example/issues/2
+Feel free to open up an issue and start a new discussion and link to related posts.
 
-More examples will be posted in my blog:
-* http://blog.webdevilopers.net/category/php/ddd/
-
-## CQRS
-
-### Command
-
-#### Immutable
-* https://github.com/matthiasnoback/convenient-immutability @matthiasnoback
+You are welcome!
